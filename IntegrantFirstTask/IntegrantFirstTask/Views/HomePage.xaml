@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IntegrantFirstTask.Views.HomePage" Title="{Binding SharedUserName}"
+             NavigationPage.HasBackButton="False">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="shopping.png" Text="ShoppingCart" Order="Primary" Command="{Binding NavigateToShoppingCartCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Home" Order="Secondary" ></ToolbarItem>
+        <ToolbarItem  Text="Filter" Order="Secondary" Command="{Binding NavigateToFilterCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Sync" Order="Secondary" Command="{Binding SyncCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Logout" Order="Secondary" Command="{Binding LogoutCommand}"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout>
+                <Label Text="{Binding ConnectionStatus}"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+                <ListView ItemsSource="{Binding Items}" HasUnevenRows="True" ItemSelected="ListView_ItemSelected" ItemTapped="ListView_ItemTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Spacing="10">
+                                    <Image Source="{Binding ImgURL}" WidthRequest="100" HeightRequest="100" Aspect="AspectFit"></Image>
+                                    <StackLayout Orientation="Vertical">
+                                        <Label FontAttributes="Bold" FontSize="Large" Text="{Binding Name}"></Label>
+                                        <Label  FontSize="Medium" Text="{Binding SmallDetails}"></Label>
+                                        <Label FontAttributes="Bold" FontSize="Large" Text="{Binding Price, StringFormat='${0:C}'}"></Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <Grid IsVisible="{Binding IsLoading}"
+              Grid.Row="0"
+              BackgroundColor="#66666666">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+        
+    </ContentPage.Content>
+</ContentPage>

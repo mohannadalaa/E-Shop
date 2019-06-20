@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IntegrantFirstTask.Views.ShoppingCartPage"
+                           NavigationPage.HasBackButton="False" Title="{Binding SharedUserName}">
+              <ContentPage.ToolbarItems>
+        <ToolbarItem  Text="Home" Order="Secondary" Command="{Binding NavigatetoHomeCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Logout" Order="Secondary" Command="{Binding LogoutCommand}"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+            <StackLayout >
+                <Grid x:Name="ItemsGrid" IsVisible="{Binding IsCartNotEmpty}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+
+                    </Grid.ColumnDefinitions>
+                    <Label Text="Price" Grid.Column="1" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"></Label>
+                    <Label Text="Quantity"  Grid.Column="2" Grid.Row="0" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"></Label>
+                </Grid>
+                <Label Text="Cart Is Empty" HorizontalOptions="CenterAndExpand" IsVisible="{Binding IsCartEmpty}"></Label>
+                <Button Text="Submit" BackgroundColor="Green" HorizontalOptions="EndAndExpand" Command="{Binding SubmitCartCommand}" IsEnabled="{Binding IsCartNotEmpty}"></Button>
+            <Label TextColor="Red" Text="Please turn on internet connectivity in order to submit your order" IsVisible="{Binding InternetNotConnected}"></Label>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

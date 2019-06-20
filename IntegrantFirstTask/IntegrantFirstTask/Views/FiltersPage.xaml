@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IntegrantFirstTask.Views.FiltersPage">
+    <ContentPage.Content>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="20" WidthRequest="200">
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="Min. Price" HorizontalOptions="Start"></Label>
+                <Label Text="{Binding Source={x:Reference Slider} , Path=Value , StringFormat='{0:0}'} " HorizontalOptions="End"></Label>
+            </StackLayout>
+            <Slider Maximum="15000" Minimum="0" x:Name="Slider" ThumbColor="Green" Value="{Binding MinPrice, Mode=OneWayToSource}"></Slider>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Max. Price" HorizontalOptions="Start"></Label>
+                <Label Text="{Binding Source={x:Reference Slider2} , Path=Value , StringFormat = '{0:0}'} " HorizontalOptions="End"></Label>
+            </StackLayout>
+            <Slider Maximum="15000" Minimum="0" x:Name="Slider2" ThumbColor="Green" Value="{Binding MaxPrice, Mode=OneWayToSource}"></Slider>
+            <Button Margin="0,30,0,0" Text="ApplyFilter" Command="{Binding ApplyFilterCommand}"></Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

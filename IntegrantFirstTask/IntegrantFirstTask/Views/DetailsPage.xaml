@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IntegrantFirstTask.Views.DetailsPage" Title="{Binding SharedUserName}"
+              NavigationPage.HasBackButton="False">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="shopping.png" Text="ShoppingCart" Order="Primary" Command="{Binding NavigateToShoppingCartCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Home" Order="Secondary" Command="{Binding NavigatetoHomeCommand}"></ToolbarItem>
+        <ToolbarItem  Text="Logout" Order="Secondary" Command="{Binding LogoutCommand}"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout>
+                <Label Text="{Binding Item.Name}"
+                VerticalOptions="Start" 
+                HorizontalOptions="StartAndExpand" FontSize="Medium" Margin="4"/>
+                <Image Source="{Binding Item.ImgURL}"  HeightRequest="150" WidthRequest="150" Aspect="AspectFit" HorizontalOptions="CenterAndExpand"></Image>
+                <Label Text="{Binding Item.Price, StringFormat='$ {0}'}"
+                VerticalOptions="Start" 
+                HorizontalOptions="StartAndExpand" FontAttributes="Bold" FontSize="Medium" TextColor="Black"/>
+                <Label Text="{Binding Item.Details}"
+                VerticalOptions="Start" 
+                HorizontalOptions="StartAndExpand" FontSize="Micro"/>
+                <StackLayout Orientation="Horizontal" Spacing="0" >
+                    <StackLayout HorizontalOptions="CenterAndExpand" Orientation="Horizontal" Spacing="0" Padding="0">
+                        <Stepper Minimum="1" Scale="0.7"  ValueChanged="Stepper_ValueChanged" Increment="1"  Margin="0"></Stepper>
+                        <Label Text="{Binding StepperValue}"   VerticalOptions="Center"></Label>
+                    </StackLayout>
+
+                    <Button HorizontalOptions="End" Text="Add To Cart" BackgroundColor="Green" Clicked="Button_Clicked"></Button>
+                </StackLayout>
+            </StackLayout>
+            <Grid IsVisible="{Binding IsLoading}"
+              Grid.Row="0"
+              BackgroundColor="#66666666">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+       
+    </ContentPage.Content>
+</ContentPage>
