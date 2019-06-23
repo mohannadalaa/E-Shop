@@ -49,6 +49,16 @@ namespace IntegrantFirstTask.ViewModels
             }
         }
 
+        private ObservableCollection<ShoppingCartItem> _SqlLiteItems;
+        public ObservableCollection<ShoppingCartItem> SQLITEItems
+        {
+            get { return _SqlLiteItems; }
+            set
+            {
+                SetValue<ObservableCollection<ShoppingCartItem>>(ref _SqlLiteItems, value);
+            }
+        }
+
         private bool _IsCartNotEmpty;
         public bool IsCartNotEmpty
         {
@@ -114,30 +124,30 @@ namespace IntegrantFirstTask.ViewModels
             }
         }
 
-        //public async Task<ObservableCollection<ShoppingCartItem>> GetCartItemsFromSQLLite()
-        //{
-        //    //try
-        //    //{
-        //    //    IsLoading = true;
-        //    //    var x = await _connection.Table<ShoppingCartItem>().ToListAsync();
-        //    //    var res = new ObservableCollection<ShoppingCartItem>(x);
-        //    //    CartItems = new ObservableCollection<ShoppingCartItem>(res.Where(i => i.UserName == SharedUserName));
-        //    //    if (CartItems.Count == 0)
-        //    //        IsCartNotEmpty = false;
-        //    //    else
-        //    //        IsCartNotEmpty = true;
-        //    //    IsLoading = false;
-        //    //    return CartItems;
-        //    //}
-        //    //catch (Exception ex)
-        //    //{
-        //    //    Console.WriteLine($"Message : {ex.Message} \n StackTrace : {ex.StackTrace}");
-        //    //    return null;
-        //    //}
-        //    // var table = client.GetOfflineSyncTableReference<Item>();
-        //    //var result = await client.GetAllOfflineSyncItemsAsync<Item>(table);
-        //    // CartItems = result;
-        //}
+        public async Task<ObservableCollection<ShoppingCartItem>> GetCartItemsFromSQLLite()
+        {
+            try
+            {
+                IsLoading = true;
+                var x = await _connection.Table<ShoppingCartItem>().ToListAsync();
+                var res = new ObservableCollection<ShoppingCartItem>(x);
+                SQLITEItems = new ObservableCollection<ShoppingCartItem>(res.Where(i => i.UserName == SharedUserName));
+                if (SQLITEItems.Count == 0)
+                    IsCartNotEmpty = false;
+                else
+                    IsCartNotEmpty = true;
+                IsLoading = false;
+                return SQLITEItems;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Message : {ex.Message} \n StackTrace : {ex.StackTrace}");
+                return null;
+            }
+            //var table = client.GetOfflineSyncTableReference<Item>();
+            //var result = await client.GetAllOfflineSyncItemsAsync<Item>(table);
+            //CartItems = result;
+        }
 
         public async void SubmitCartToAzureDB()
         {
