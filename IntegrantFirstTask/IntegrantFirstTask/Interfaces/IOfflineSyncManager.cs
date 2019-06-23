@@ -20,6 +20,7 @@ namespace IntegrantFirstTask.Interfaces
         Task<bool> InsertOfflineSyncObjectAsync<T>(T Object, IMobileServiceSyncTable<T> Table);
         Task<bool> UpdateOfflineSyncObjectAsync<T>(T Object, IMobileServiceSyncTable<T> Table);
         Task<bool> DeleteOfflineSyncObjectAsync<T>(T Object, IMobileServiceSyncTable<T> Table);
-        Task SyncAsync<T>(IMobileServiceSyncTable<T> Table);
+        Task PullAsync<T>(IMobileServiceSyncTable<T> Table);
+        Task PushAsync();
     }
 }

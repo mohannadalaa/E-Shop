@@ -82,7 +82,7 @@ namespace IntegrantFirstTask.ViewModels
                 var Table = OfflineManager.GetOfflineSyncTableReference<Item>();
                 if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                 {
-                    await OfflineManager.SyncAsync<Item>(Table);
+                    await OfflineManager.PullAsync<Item>(Table);
                     await NavigationHelper.PopPageAsync();
                     await NavigationHelper.NavigateToPageAsync(new HomePage());
                 }

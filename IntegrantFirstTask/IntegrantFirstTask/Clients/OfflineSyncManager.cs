@@ -176,17 +176,50 @@ namespace IntegrantFirstTask.Clients
         }
         #endregion
 
-        public async Task SyncAsync<T>(IMobileServiceSyncTable<T> Table)
+        public async Task PullAsync<T>(IMobileServiceSyncTable<T> Table)
         {
             ReadOnlyCollection<MobileServiceTableOperationError> syncErrors = null;
-
             try
             {
-                await this.Client.SyncContext.PushAsync();
-
                 // The first parameter is a query name that is used internally by the client SDK to implement incremental sync.
                 // Use a different query name for each unique query in your program.
                 await Table.PullAsync(nameof(Table), Table.CreateQuery());
+            }
+            catch (MobileServicePushFailedException exc)
+            {
+                if (exc.PushResult != null)
+                {
+                    syncErrors = exc.PushResult.Errors;
+                }
+            }
+
+            // Simple error/conflict handling.
+            if (syncErrors != null)
+            {
+                foreach (var error in syncErrors)
+                {
+                    if (error.OperationKind == MobileServiceTableOperationKind.Update && error.Result != null)
+                    {
+                        // Update failed, revert to server's copy
+                        await error.CancelAndUpdateItemAsync(error.Result);
+                    }
+                    else
+                    {
+                        // Discard local change
+                        await error.CancelAndDiscardItemAsync();
+                    }
+
+                    Debug.WriteLine(@"Error executing sync operation. Item: {0} ({1}). Operation discarded.", error.TableName, error.Item["id"]);
+                }
+            }
+        }
+
+        public async Task PushAsync()
+        {
+            ReadOnlyCollection<MobileServiceTableOperationError> syncErrors = null;
+            try
+            {
+                await this.Client.SyncContext.PushAsync();
             }
             catch (MobileServicePushFailedException exc)
             {

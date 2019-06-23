@@ -64,10 +64,11 @@ namespace IntegrantFirstTask
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
-                await OfflineManager.SyncAsync<Item>(ItemsTable);
-                await OfflineManager.SyncAsync<User>(UsersTable);
-                await OfflineManager.SyncAsync<Order>(OrdersTable);
-                await OfflineManager.SyncAsync<OrderItems>(OrderItemsTable);
+                await OfflineManager.PushAsync();
+                await OfflineManager.PullAsync<Item>(ItemsTable);
+                await OfflineManager.PullAsync<User>(UsersTable);
+                await OfflineManager.PullAsync<Order>(OrdersTable);
+                await OfflineManager.PullAsync<OrderItems>(OrderItemsTable);
 
                 //var result = await OfflineManager.GetAllOfflineSyncItemsAsync<Item>(ItemsTable);
                 //var result1 = await OfflineManager.GetAllOfflineSyncItemsAsync<User>(UsersTable);
