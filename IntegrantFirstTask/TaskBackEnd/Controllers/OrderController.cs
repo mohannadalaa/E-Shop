@@ -59,8 +59,8 @@ namespace TaskBackEnd.Controllers
                 {
                     User = context.Users.FirstOrDefault(u => u.Name == item.User.Name),
                     OrderItems = OI,
-                    Id = new Guid().ToString(),
-                    Submitted = true
+                    Id = Guid.NewGuid().ToString(),
+                    SubmittedOnline = true
                 };
 
                 context.Orders.Add(order);

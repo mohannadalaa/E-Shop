@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Description;
 using System.Web.Http.OData;
 using Microsoft.Azure.Mobile.Server;
 using TaskBackEnd.DataObjects;
@@ -38,6 +39,7 @@ namespace TaskBackEnd.Controllers
         }
 
         // POST tables/User
+        [ResponseType(typeof(Models.User))]
         public async Task<IHttpActionResult> PostUser(Models.User item)
         {
             if(!context.Users.Any(u=>u.Name == item.Name))
@@ -47,6 +49,13 @@ namespace TaskBackEnd.Controllers
             }   
             else
             return NotFound();
+        }
+
+        [HttpGet]
+        [Route("tables/User/GetUserByName")]
+        public IHttpActionResult GetUserByName(string Name)
+        {
+            return Ok();
         }
 
         // DELETE tables/User/48D68C86-6EA6-4C25-AA33-223FC9A27959

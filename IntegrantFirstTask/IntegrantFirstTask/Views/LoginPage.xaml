@@ -4,14 +4,25 @@
              x:Class="IntegrantFirstTask.Views.LoginPage" BackgroundColor="DarkGreen"
              NavigationPage.HasNavigationBar="False">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" >
-            <StackLayout Orientation="Horizontal"  VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
-                <Image  Source="shopping.png" Aspect="AspectFill" Scale="0.5" ></Image>
-                <Label Text="eShop.com" VerticalOptions="Center" VerticalTextAlignment="Center" FontAttributes="Bold"></Label>
+        <Grid>
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" >
+                <StackLayout Orientation="Horizontal"  VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
+                    <Image  Source="shopping.png" Aspect="AspectFill" Scale="0.5" ></Image>
+                    <Label Text="eShop.com" VerticalOptions="Center" VerticalTextAlignment="Center" FontAttributes="Bold"></Label>
+                </StackLayout>
+                <Entry Placeholder="Enter Username" Text="{Binding UserName, Mode=TwoWay}"></Entry>
+                <Label IsVisible="{Binding IsErrorShown}" Text="{Binding ErrorMessage}" TextColor="Red"></Label>
+                <Button Text="Login" BackgroundColor="Yellow" Command="{Binding LoginCommand}" IsEnabled="{Binding LoginButtonEnabled}"></Button>
             </StackLayout>
-            <Entry Placeholder="Enter Username" Text="{Binding UserName, Mode=TwoWay}"></Entry>
-            <Label IsVisible="{Binding IsErrorShown}" Text="{Binding ErrorMessage}" TextColor="Red"></Label>
-            <Button Text="Login" BackgroundColor="Yellow" Command="{Binding LoginCommand}" IsEnabled="{Binding LoginButtonEnabled}"></Button>
-        </StackLayout>
+
+            <Grid IsVisible="{Binding IsLoading}"
+              Grid.Row="0"
+              BackgroundColor="#66666666">
+                <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+            </Grid>
+        </Grid>
+     
     </ContentPage.Content>
 </ContentPage>

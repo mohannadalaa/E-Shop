@@ -14,12 +14,13 @@ namespace IntegrantFirstTask.Models
             get { return _details; }
 
             set {
-                _details = value;
                 if (value.Length > 51)
-                    SmallDetails = value.Substring(0, 50);
+                    this.SmallDetails = value.Substring(0, 50);
                 else
-                    SmallDetails = value;
-                }
+                    this.SmallDetails = value;
+
+                _details = value;
+            }
         }
         public string SmallDetails { get; set; }
         public double Price { get; set; }

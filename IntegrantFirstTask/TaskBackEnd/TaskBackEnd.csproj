@@ -195,6 +195,7 @@
     <Compile Include="Controllers\OrderItemsController.cs" />
     <Compile Include="Controllers\TodoItemController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DataObjects\Cart.cs" />
     <Compile Include="DataObjects\OrderDTO.cs" />
@@ -207,6 +208,10 @@
     <Compile Include="Migrations\201906201306204_Add Submitted To Order.cs" />
     <Compile Include="Migrations\201906201306204_Add Submitted To Order.Designer.cs">
       <DependentUpon>201906201306204_Add Submitted To Order.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906231359432_SubmittedOfflineandonline.cs" />
+    <Compile Include="Migrations\201906231359432_SubmittedOfflineandonline.Designer.cs">
+      <DependentUpon>201906231359432_SubmittedOfflineandonline.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Item.cs" />
@@ -246,6 +251,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906201306204_Add Submitted To Order.resx">
       <DependentUpon>201906201306204_Add Submitted To Order.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906231359432_SubmittedOfflineandonline.resx">
+      <DependentUpon>201906231359432_SubmittedOfflineandonline.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -100,15 +100,13 @@ namespace IntegrantFirstTask.ViewModels
             ItemsTable = client.GetOfflineSyncTableReference<Item>();
             OrdersTable = client.GetOfflineSyncTableReference<Order>();
             OrdersItemsTable = client.GetOfflineSyncTableReference<OrderItems>();
-
-
         }
 
         public async void DeleteItemFromSQLLite(object Index)
         {
             try
             {
-                await _connection.DeleteAsync(CartItems[(int)Index]);
+                await _connection.DeleteAsync(SQLITEItems[(int)Index]);
                 if (CartItems.Contains(CartItems[(int)Index]))
                 {
                     CartItems.Remove(CartItems[(int)Index]);
@@ -131,7 +129,7 @@ namespace IntegrantFirstTask.ViewModels
                 IsLoading = true;
                 var x = await _connection.Table<ShoppingCartItem>().ToListAsync();
                 var res = new ObservableCollection<ShoppingCartItem>(x);
-                SQLITEItems = new ObservableCollection<ShoppingCartItem>(res.Where(i => i.UserName == SharedUserName));
+                SQLITEItems = new ObservableCollection<ShoppingCartItem>(res.Where(i => i.UserName == SharedUser.Name));
                 if (SQLITEItems.Count == 0)
                     IsCartNotEmpty = false;
                 else
@@ -144,9 +142,6 @@ namespace IntegrantFirstTask.ViewModels
                 Console.WriteLine($"Message : {ex.Message} \n StackTrace : {ex.StackTrace}");
                 return null;
             }
-            //var table = client.GetOfflineSyncTableReference<Item>();
-            //var result = await client.GetAllOfflineSyncItemsAsync<Item>(table);
-            //CartItems = result;
         }
 
         public async void SubmitCartToAzureDB()
@@ -156,19 +151,15 @@ namespace IntegrantFirstTask.ViewModels
                 if (InternetConnected)
                 {
                     List<OrderItems> Items = new List<OrderItems>();
-                    for (int i = 0; i < CartItems.Count; i++)
+                    for (int i = 0; i < SQLITEItems.Count; i++)
                     {
-                        Items.Add(new OrderItems() { ItemCount = CartItems[i].Count, ItemID = CartItems[i].ID });
+                        Items.Add(new OrderItems() { ItemCount = SQLITEItems[i].Count, ItemID = SQLITEItems[i].ItemID });
                     }
-                    var UserTable = Client.GetTableReference<User>();
-                    //Add User If Not exist
-                    await Client.InsertObjectAsync(new Models.User() { Name = SharedUserName }, UserTable);
 
                     Order order = new Order()
                     {
-                        User = new Models.User() { Name = SharedUserName },
+                        User = new Models.User() { Name = SharedUser.Name , ID = SharedUser.ID },
                         OrderItems = Items,
-                        Submitted = true
                     };
 
                     var table = Client.GetTableReference<Order>();
@@ -189,24 +180,17 @@ namespace IntegrantFirstTask.ViewModels
         {
             try
             {
-                string UserID = Guid.NewGuid().ToString();
-
                 List<OrderItems> Items = new List<OrderItems>();
                 for (int i = 0; i < CartItems.Count; i++)
                 {
                     Items.Add(new OrderItems() { ItemCount = CartItems[i].Count, ItemID = CartItems[i].ID, OrderID = OrderID, Id = Guid.NewGuid().ToString() });
                 }
-                Users = await client.GetAllOfflineSyncItemsAsync<User>(UsersTable);
-                if (!Users.Any(i => i.Name == SharedUserName))
-                    await client.InsertOfflineSyncObjectAsync<User>(new User() { Name = SharedUserName, ID = UserID }, UsersTable);
-                else
-                    UserID = Users.FirstOrDefault(U => U.Name == SharedUserName).ID;
 
                 Order order = new Order()
                 {
-                    Submitted = false,
+                    SubmittedOffline = true,
                     ID = OrderID,
-                    UserID = UserID,
+                    UserID = SharedUser.ID,
                 };
 
                 await client.InsertOfflineSyncObjectAsync<Order>(order,OrdersTable);
@@ -233,15 +217,16 @@ namespace IntegrantFirstTask.ViewModels
                 OrdersItems = await client.GetAllOfflineSyncItemsAsync<OrderItems>(OrdersItemsTable);
 
 
-                User User = Users.FirstOrDefault(u => u.Name == SharedUserName);
-                Order Order = Orders.FirstOrDefault(o => (o.UserID == User.ID && o.Submitted == false));
+                User User = SharedUser;
+                Order Order = Orders.FirstOrDefault(o => (o.UserID == User.ID && (o.SubmittedOffline == false || o.SubmittedOnline == false)));
                 List<string> ItemsIDS = OrdersItems.Where(i2 => i2.OrderID == Order.ID).Select(i => i.ItemID).ToList();
 
                 CartItems = new ObservableCollection<Item>(AllItems.Where(o =>
                 {
-                    var order = OrdersItems.FirstOrDefault(oi => oi.ItemID == o.ID);
-                    if (order != null)
-                        o.Count = order.ItemCount;
+                    var orderitem = OrdersItems.FirstOrDefault(oi => oi.ItemID == o.ID);
+                    if (orderitem != null)
+                        o.Count = orderitem.ItemCount;
+
                     return ItemsIDS.Contains(o.ID);
 
                 }));
@@ -264,6 +249,13 @@ namespace IntegrantFirstTask.ViewModels
         {
             try
             {
+                OrdersItems = await client.GetAllOfflineSyncItemsAsync<OrderItems>(OrdersItemsTable);
+                Item item = CartItems[(int)Index];
+                Order Order = Orders.FirstOrDefault(o => (o.UserID == SharedUser.ID && (o.SubmittedOffline == false || o.SubmittedOnline == false)));
+                var orderi = OrdersItems.FirstOrDefault(oi => oi.ItemID == item.ID && oi.OrderID == Order.ID);
+                OrdersItems.Remove(orderi);
+
+                await client.DeleteOfflineSyncObjectAsync(orderi, OrdersItemsTable);
                 if (CartItems.Contains(CartItems[(int)Index]))
                 {
                     CartItems.Remove(CartItems[(int)Index]);

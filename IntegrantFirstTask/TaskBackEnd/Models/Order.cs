@@ -11,7 +11,8 @@ namespace TaskBackEnd.Models
     {
         [ForeignKey("User")]
         public string UserID { get; set; }
-        public bool Submitted { get; set; }
+        public bool SubmittedOnline { get; set; }
+        public bool SubmittedOffline { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<OrderItems> OrderItems { get; set; }
     }

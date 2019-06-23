@@ -54,9 +54,9 @@ namespace IntegrantFirstTask.ViewModels
         public ICommand LogoutCommand { get; set; }
         public ICommand NavigateToShoppingCartCommand { get; set; }
 
-        public string SharedUserName
+        public User SharedUser
         {
-            get { return Application.Current.Properties["UserName"].ToString(); }
+            get { return (User)Application.Current.Properties["User"]; }
         }
 
         private ObservableCollection<Item> _items;

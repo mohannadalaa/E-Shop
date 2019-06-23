@@ -60,7 +60,10 @@ namespace IntegrantFirstTask.ViewModels
                 IsLoading = true;
                 var Table = OfflineManager.GetOfflineSyncTableReference<Item>();
                 var result = await OfflineManager.GetAllOfflineSyncItemsAsync<Item>(Table);
-
+                for (int i = 0; i < result?.Count; i++)
+                {
+                    result[i].SmallDetails = result[i].Details.Length > 51 ? result[i].Details.Substring(0, 50) : result[i].Details;
+                }
                 Filter(result);
                 IsLoading = false;
             }

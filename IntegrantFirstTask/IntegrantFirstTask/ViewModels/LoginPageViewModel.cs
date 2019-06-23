@@ -2,9 +2,11 @@
 using IntegrantFirstTask.Helpers;
 using IntegrantFirstTask.Interfaces;
 using IntegrantFirstTask.Models;
+using IntegrantFirstTask.Services;
 using IntegrantFirstTask.Views;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -15,7 +17,10 @@ namespace IntegrantFirstTask.ViewModels
     class LoginPageViewModel : BaseViewModel
     {
         public IAzureManager Client { get; set; }
+        public IOfflineSyncManager OfflineManager { get; set; }
+        public UserService UserService { get; set; }
         private bool _IsErrorShown = false;
+
         public bool IsErrorShown
         {
             get { return _IsErrorShown; }
@@ -70,6 +75,8 @@ namespace IntegrantFirstTask.ViewModels
         {
             LoginCommand = new Command(LoginButtonClicked);
             Client = AzureManager.GetAzureManager(Constants.AzureUrl);
+            UserService = new UserService();
+            OfflineManager = OfflineSyncManager.GetOfflineSyncManager(Constants.AzureUrl);
         }
 
         private async void LoginButtonClicked()
@@ -81,12 +88,23 @@ namespace IntegrantFirstTask.ViewModels
             }
             else
             {
+                IsLoading = true;
                 IsErrorShown = false;
                 ErrorMessage = "";
                 var UserTable = Client.GetTableReference<User>();
+                var user = await UserService.PostUserAsync(new User(){Name = UserName });
+
+               var  UsersTable = OfflineManager.GetOfflineSyncTableReference<User>();
+               var Users = await OfflineManager.GetAllOfflineSyncItemsAsync<User>(UsersTable);
+                if (!Users.Any(i => i.ID == SharedUser?.ID ))
+                    await OfflineManager.InsertOfflineSyncObjectAsync<User>(new User() { Name = SharedUser?.Name, ID = SharedUser?.ID }, UsersTable);
+                
+
                 Application.Current.Properties["UserName"] = UserName;
-               await NavigationHelper.NavigateToPageAsync(new HomePage());
+                Application.Current.Properties["User"] = user != null ? user : new User() { Name = UserName};
+                await NavigationHelper.NavigateToPageAsync(new HomePage());
                 UserName = null;
+                IsLoading = false;
             }
                 
         }

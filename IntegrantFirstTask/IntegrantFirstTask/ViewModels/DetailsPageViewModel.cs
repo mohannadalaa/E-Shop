@@ -49,9 +49,9 @@ namespace IntegrantFirstTask.ViewModels
                 var x = await _connection.Table<ShoppingCartItem>().ToListAsync();
                 var res = new ObservableCollection<ShoppingCartItem>(x);
 
-                if (res.Any(i => i.ItemID == _item.ID && i.UserName == SharedUserName))
+                if (res.Any(i => i.ItemID == _item.ID && i.UserName == SharedUser.Name))
                 {
-                    var item = res.FirstOrDefault(i => i.ItemID == _item.ID && i.UserName == SharedUserName);
+                    var item = res.FirstOrDefault(i => i.ItemID == _item.ID && i.UserName == SharedUser.Name);
                     item.Count = StepperValue;
                     await _connection.UpdateAsync(item);
                 }
@@ -65,7 +65,7 @@ namespace IntegrantFirstTask.ViewModels
                         Name = _item.Name,
                         Price = _item.Price,
                         SmallDetails = _item.SmallDetails,
-                        UserName = SharedUserName,
+                        UserName = SharedUser.Name,
                         Count = StepperValue
                     };
                     await _connection.InsertAsync(sci);

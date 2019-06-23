@@ -8,7 +8,8 @@ namespace IntegrantFirstTask.Models
     {
         public string ID { get; set; }
         public string UserID { get; set; }
-        public bool Submitted { get; set; }
+        public bool SubmittedOnline { get; set; }
+        public bool SubmittedOffline { get; set; }
         public User User { get; set; }
         public List<OrderItems> OrderItems { get; set; }
     }
